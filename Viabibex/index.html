@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+
+<html>
+<body>
+
+<h1>Viabibex</h1>
+
+<h3> Introduction </h3>
+
+<p>Viabibex is a software designed to approximate viability kernel of 2D problems. Methods
+and tools implemented in this software are based on interval analysis. Interval analysis
+allows to approximate the viability kernel with continuous set in a guaranteed way. Viabibex
+uses the C++ Interval library <a href="http://www.ibex-lib.org/">Ibex </a>  and its extension
+<a href="http://perso.ensta-paristech.fr/~chapoutot/dynibex/"> Dynibex </a> that provides guaranteed integration tools.  </p>  <p> Algorithms implemented in Viabibex were presented at SMART 2015 workshop. The presentation is available here: <a href="http://www.ensta-bretagne.fr/monnet/Viabibex/smart_2015_presentation_monnet.pdf" > SMART_2015 presentation </a>. </p><h3> Download </h3><p> At the moment, only the binary for linux 64 bits is available: <ul> <li>  <a href="http://www.ensta-bretagne.fr/monnet/Viabibex/Viabibex.tar.gz" target="_blank"> Viabibex </a> for linux 64 bits. </li> </ul> </p> <h3> Installation</h3> Requierement: <ul><li> <a href="http://www.qt.io"> Qt </a> 5.1 or a more recent version must be installed on your computer. </li> </ul>. <h2> Viabibex user guide</h2> 
+
+<h3> General Layout </h3>
+<p> Viabibex interface has many buttons and fields that can be grouped by functionality. </p>
+<img src="images/Layout.png" alt="Layout" style="width:1000px;height:600px;">
+<p>
+<ul>
+<li>1: Graphic view in which results are displayed. The <strong> color code</strong> is the following: 
+<ul>
+<li>Red: the set does not belongs to Viab(K).</li>
+<li>Green: the set belongs to Viab(K).</li>
+<li>Blue: no information.</li>
+<li>Yellow: box currently treated by the inner or outer approximation algorithms.</li>
+</ul>
+<li>2: Information about algorithms execution are displayed in this window.</li>
+<li>3: Fields used to set a problem.</li>
+<li>4: Vector field display options.</li>
+<li>5: Buttons to used to launch algorithms, the "stop" button interrupts algorithms. It is not possible to run several algorithms at the same time.</li>
+<li>6: Algorithms parameters. </li>
+</ul>
+</p>
+
+<p> It is also possible to save/load problems under "file" menu, and save current graphic view under "options" menu on the top left corner. Sevral problems are already provided. </p>
+<img src="images/file_option.png" alt="Layout" style="width:167px;height:20px;">
+
+<h3> How to set a problem </h3>
+
+<p>Viabibex can approximate the viability kernel of 2D dynamic and controllable systems:
+<img src="images/evolution_function.png" alt="Evolution function" style="width:100px;height:25px;">
+
+, where 
+<img src="images/evolution_function_domain.png" alt="Evolution function domain" style="width:130px;height:25px;"> and U is a subset of IR. The dimension of the control vector is limited to 1. The state variables are denoted x1 and x2.</p>
+<img src="images/set_problem.png" alt="problem" style="width:500px;height:300px;">
+<p> In order to set a problem, you must proceed as follow:
+<ul>
+<li> Define a finite subset of the state space: </li>
+<ul>
+<li>"x1min" field: lower bound of first state variable.</li>
+<li>"x1max" field: upper bound of first state variable.</li>
+<li>"x2min" field: lower bound of second state variable.</li>
+<li>"x2max" field: upper bound of second state variable.</li>  
+</ul>
+<li> Define the range of control with "umin" and "umax" fields. </li>
+<li> Define the precision of the sub-paving used to represent the state space in the "eps" field. </li>
+<li> Define the evolution fuction of the system in the "evolution function" field. The two state equations must be separated by a carriage return. Be carefull, do not use a carriage return in the expression of a state equation.</li>
+<li>  </li>
+</ul>
+Viabibex will approximate the viability kernel Viab(K) of K under the evolution function. The set K corresponds to the box [x1min,x1max]x[x2min,x2max] by default. It is possible to define the set K by defining constraints in the "outer constraints" field. To add a constraint, expressed it an a function depending of x1 and x2 lower than 0 and write the function expression in the "outer constraints" field. For example, if you want to define the set K as a circle centred on (2,3) with a radius of 5 you must write the expression "-(x1-2)^2-(x2-3)^2+5^2" in the field.
+</p>
+<p> It is also possible to give an initial set that will consider as a subset of Viab(K). To do so, you must procced the same way as outer constraints are defined. For example, if you want to defined a circle centred on (1,-1) with a radius of 1 as a viable subset of Viab(K), you must write the expression "(x1-1)^2+(x2+1)^2-1" in the field. </p>
+<p> By clicking on the "Apply Constraints" button, you apply the constraints to the subset [x1min,x1max]x[x2min,x2max] of the state space.</p>
+<p> Be carefull, <strong> clicking "Apply Constraints" button erase all results already found</strong>.</p>
+<img src="images/in_out_constraints.png" alt="Constraint" style="width:1000px;height:600px;">
+
+
+<h3> Vector field display </h3>
+
+<p>Once the problem is set, it is possible to display the vector field. To do so, you must first check the "Show vector field" checkbox.</p>
+<img src="images/show_vf.png" alt="vf" style="width:1000px;height:600px;">
+<p>Then, you can move the cursor of the slidebar next to the "Show vector field" checkbox to display the vector field for a given control between umin and umax. In this example, the double integrator example is considered.</p>
+
+<h3> Computing subset of Viab(K) </h3>
+
+<p>
+The "V-viable functions" button launches an algorithm that compute subsets of Viab(K). The principle of the algorithm is to fix a control uf, and to find equilibrium points of the autonomous system f(x,uf). Then using Lyapunov theory the algorithm tries to compute subset of Viab(K). For further detail about this algorithm, see SMART 2015 <a href=""> presentatoin </a>.   </p>
+<p> You can run the algorithm with default parameters by clicking on the "V-viable functions" button. It is possible to modify some parameters of the algorithm. To do so, check the checkbox "More options" and choose the tab "V-viability".
+<ul>
+<li> If "Fast computation" checkbox is checked, the computation of subsets of Viab(K) is accelerated. However the subsets computed will not be as large as possible.</li>
+<li> "Nb control" field allows you to choose the the number of autonomous system f(x,uf) from which to find subsets of Viab(K). </li>
+<li> If "Ignore viable points" is checked, the algorithm will not try to compute subset of Viab(K) from equilibrium points that belong to the viable set (green set). </li> 
+</ul>
+<p> Be carefull, <strong> clicking "V-viable functions" button erase all results already found</strong>.</p>
+<img src="images/v_viability.png" alt="v_viab" style="width:1000px;height:600px;">
+<p> <strong> The "outer constraints" are applied when the algorithm is launched </strong>. There is no need to clicked the "Apply Constraints" button before using this algorithm. </p>
+
+<h3> Polygon expansion </h3>
+
+<p>The "Polygon expansion" button launches an algorithm based on expansion of polygons enclosing subset of Viab(K). For details about this algorithm, see SMART 2015 <a href=""> presentation </a>. </p>
+<p> In order to run this algorithm, you must have already computed subsets of Viab(K) with "V-viable functions" button. Indeed, the algorithm computes polygons that enclosed the subsets of Viab(K) and try to expand them to find larger subsets of Viab(K). It is possible to choose the number of points of initial polygons with "nb points" field under the "polygon" tab. Many points means larger expansion but important computation time. </p>
+<img src="images/polygon.png" alt="poly" style="width:1000px;height:600px;">
+
+<h3> Capture bassin problem (inner approximation) </h3>
+
+<p>Once a non-empty subset of Viab(K) is computed (the green set is non-empty) or given via "Inner constraints" field, it is possible to compute a better inner approximation. The capture bassin of a subset of Viab(K) is also a subset of Viab(K). The "Inner approximation" button launches an algorithm that approximates the capture bassin of the green set. This algorithm is based on guaranteed integration of continuous set. The system is simulated with a box of blue set as initial condition, and after a time t we check if the system reached the green set. The yellow box indicates which box is used as initial condition while algorithm is running. </p>
+<p> The following parameters can be set:
+<ul>
+<li> The time of simulation of the system can be set in the "Simulation time" field. A default simulation time is automatically if none is given.</li>
+<li> Guaranteed integration provides by Dynibex is used if "Garanteed integration" checkbox is checked. If guaranteed integration is not used, a simulation method based on Runge-Kutta is used. The simulation will be faster but <strong> the result is not guaranteed </strong>.</li>
+<li> The default simulation precision is 1.e-3. A better precision gives a better aproximation of the location of the system after the simulation, but simulation takes more time.  </li>
+<li> The simulation method can be choosed with the "Simulation method" combo box.</li>
+</ul> </p>
+<p> For further information about guaranteed integration, see Dynibex <a href="http://perso.ensta-paristech.fr/~chapoutot/dynibex/"> homepage </a>.</p>
+
+<img src="images/capture_bassin.png" alt="cb" style="width:1000px;height:600px;">
+
+<h3> Over approximation </h3>
+
+<p> The over approximation algorithm is launched with the "Outer Approximation" button. This algorithm works the same way that the inner approximation algorithm. A box of the blue set is considered, and simulating the system from this box, we try to prove that the system cannot stay in K for any control. The parameters for this algorithm are the same as the ones of the capture bassin algorithm. </p>
+
+<img src="images/outer_approx.png" alt="out_approx" style="width:1000px;height:600px;">
+
+</body>
+</html>
